@@ -1,0 +1,78 @@
+# transforming-healthcare-with-AI-powered-disease-prediction-based-on-patient-data-
+import pandas as pd
+ from sklearn.model_selection import train_test_split
+ from sklearn.preprocessing import LabelEncoder
+ from sklearn.ensemble import RandomForestClassifier
+ from sklearn.metrics import accuracy_score, classification_report
+
+
+# Read the dataset 
+ df = pd.read_csv("/content/Disease_symptom_and_patient_profile_dataset.csv")
+ df.dropna(inplace=True)
+ df
+
+
+# Convert the text data into the unique numeric value 
+ label_encoders = {}
+ for col in df.columns:
+    if df[col].dtype == 'object':
+        le = LabelEncoder()
+
+
+ # Creates a new LabelEncoder instance for the current column.
+        df[col] = le.fit_transform(df[col])
+        label_encoders[col] = le
+ df
+
+
+# Data sepration 
+ target_col = 'Disease'
+ feature_cols = [col for col in df.columns if col != target_col]
+ X = df[feature_cols]
+ y = df[target_col]
+ X
+ y
+
+
+# Train and Test the data and Seprated train data-80% and Test data-20% 
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+# Define the randomforest algorithm and train , test 
+ model = RandomForestClassifier(n_estimators=100, random_state=42)
+ model.fit(X_train, y_train)
+ RandomForestClassifier
+  RandomForestClassifier(random_state=42)
+
+
+# Define the Function for predict the given data 
+ def predict_disease(user_input):
+  input_df=pf.Dataframe([user_input])
+
+
+# encode the input using the same encoders
+   for col in input_df.columns:
+        if col in label_encoders:
+            input_df[col] = label_encoders[col].transform(input_df[col])
+    # Predict
+    pred_encoded = model.predict(input_df[feature_cols])[0]
+    predicted_disease = label_encoders[target_col].inverse_transform([pred_encoded])[0]
+    return predicted_disease
+
+
+# Provide the user input 
+ user_input = {
+    'Fever': 'Yes',
+    'Cough': 'Yes',
+    'Fatigue': 'Yes',
+    'Difficulty Breathing': 'Yes',
+    'Age': 89,
+ 'Gender': 'Female',
+ 'Blood Pressure': 'Normal',
+ 'Cholesterol Level': 'Normal',
+ 'Outcome Variable': 'Positive'
+ }
+ # Predict and print
+ prediction = predict_disease(user_input)
+ print("Predicted Disease:", prediction)
+ Predicted Disease: Stroke
